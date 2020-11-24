@@ -1,0 +1,126 @@
+/**
+This program draws a simple, anlog clock that gets updated (more or less, see
+below) in real-time. Since the Jack language does not offer any API do
+determine the current system time, the program asks the user to enter the
+current time in "HH:MM:SS" format at start up. You can also simply press enter
+to start the clock at 00:00:00.
+
+Since Jack's integer values are 16 bit, we can only model the clock's time in 4
+second increments since a full day (23:59:59) has 86,400 seconds or more than
+can be stored in an integer value.
+
+Jack's Sys.wait() API is not very precise; even the API documentation states
+that it waits for "approximately" the specified duration. This clock
+implementation tries to adjust for this imprecision by using a "clock speed
+adjustmet factor" that is set in the Main.main() method to a default value of
+100 but can be adjusted by the user. The factor is roughly a percentage value
+and measures how fast Jack's system time is compared to real time. A value less
+than 100 means that Jack's system time is too slow and therefore we need to
+wait less time between each clock tick. E.g. a value of 95 increases the speed
+of the clock by 5 percent. Reversely, a value of more than 100 decreases the
+clock speed.
+*/
+class Main {
+
+  static Time currentTime;
+  static AnalogClock clock;
+  static int sleepMs;
+  static boolean quit;
+
+  /*
+   The main method that will be called by Sys.init().
+  */
+  function void main() {
+    var String timeString;
+    var String prompt;
+
+    do MathUtils.init();
+    // Sys.wait is very imprecise and so we need to adjust the "ms" to sleep by
+    // a skew factor which depends on processor speed, etc.
+    do Main.setClockSpeedAdjustment(100);
+    do Main.setTime();
+    let prompt = "Current time: ";
+    let quit = false;
+    while (~quit) {
+      do Output.moveCursor(0, 0);
+      let timeString = currentTime.toString();
+      do Output.printString(prompt);
+      do Output.printString(timeString);
+      do timeString.dispose();
+      do clock.draw();
+      do Sys.wait(sleepMs);
+      do currentTime.advance(1);
+      do Main.handleKeyEvent();
+    }
+    do Screen.clearScreen();
+    do Output.moveCursor(0, 0);
+    do Output.printString("Bye-bye!");
+
+    return;
+  }
+
+  /*
+  Sets the clock speed adjustment factor.
+  If called with a positive number, the function simply updates the sleep duration and returns.
+  If called with a negative number, the function prompts the user to enter a new clock speed adjustment factor.
+  */
+  function void setClockSpeedAdjustment(int factor) {
+    while (factor < 0) {
+      do Screen.clearScreen();
+      do Output.moveCursor(0, 0);
+      let factor = Keyboard.readInt("What's the clock speed factor? => ");
+      do clock.drawClock();
+    }
+    let sleepMs = (Time.tickMs() / 100) * factor;
+    return;
+  }
+
+  /*
+  Prompt the user to enter the current system time in "HH:MM:SS" format.
+  */
+  function void setTime() {
+    var String hms;
+    var String prompt;
+
+    do Screen.clearScreen();
+    do Output.moveCursor(0, 0);
+    let prompt = "What's the current time? (HH::MM::SS) => ";
+    let hms = Keyboard.readLine(prompt);
+    if (hms.length() = 0) {
+      let currentTime = Time.new(0);
+    } else {
+      let currentTime = Time.fromHMS(hms);
+    }
+    do hms.dispose();
+    do prompt.dispose();
+    let clock = AnalogClock.new(currentTime);
+
+    return;
+  }
+
+  /*
+  Checks whether an key is pressed. The following keys are used:
+    * "Q" - quit the program
+    * "T" - set a new time
+    * "S" - update the clock speed adjustment factor
+  */
+  function void handleKeyEvent() {
+    var char key;
+
+    let key = Keyboard.keyPressed();
+    // "Q"
+    if (key = 81) {
+      let quit = true;
+    }
+    // "T"
+    if (key = 84) {
+      do Main.setTime();
+    }
+    // "S"
+    if (key = 83) {
+      do Main.setClockSpeedAdjustment(-1);
+    }
+
+    return;
+  }
+}

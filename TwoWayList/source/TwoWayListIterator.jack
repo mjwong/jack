@@ -1,0 +1,111 @@
+/** Implements the ListIterator class
+ *  adapted from Java implementation of ListIterator.
+ *  Not all of the ListIterator interface methods are implemented here */
+class TwoWayListIterator {
+	field TwoWayList itsList;
+	field Node 		 itsPos;
+	field Node 		 p;			// temp node
+	field int 		 itsDirection;
+	field int 		 itsIndex;
+
+	constructor TwoWayListIterator new(TwoWayList given) {
+		let itsPos = given.getHead();
+		let itsDirection = 0;	// signals remove() is not allowed
+		let itsIndex = -1;		// returned by previousIndes()
+		return this;
+	}
+
+	method boolean hasNext() {
+		let p = itsPos.getNext();
+		return ~(p.getData() = null);
+	}
+
+	method String previous() {
+		if (itsPos.getData() = null) {
+			do Output.printString("cannot back up");
+			return -1;
+		}
+		let itsPos = itsPos.getPrevious();
+		let itsDirection = -1;
+		let itsIndex = itsIndex + 1;
+		let p = itsPos.getNext();
+		return p.getData();
+	}
+
+	method void add(String a) {
+		if (a = null) {
+			do Output.printString("no nulls allowed");
+			return;
+		}
+		let itsPos = Node.new(a, itsPos.getNext(), itsPos);
+
+		let p = itsPos.getNext();
+		do  p.setPrevious(itsPos);
+
+		let p = itsPos.getPrevious();
+		do  p.setNext(itsPos);
+		
+		let itsDirection = 0;
+		let itsIndex = itsIndex + 1;
+		return;
+	}
+
+	method String next() {
+		let p = itsPos.getNext();
+
+		if (p.getData() = null) {
+			// the sequence's header node
+			 do Output.printString("reached the end");
+			 return null;
+		}		
+		let itsPos = itsPos.getNext();
+		let itsDirection = 1;
+		let itsIndex = itsIndex + 1;
+		return itsPos.getData();
+	}
+
+	method void remove() {
+		if (itsDirection = 0) {
+			do Output.printString("cannot remove");
+			return;
+		}
+		
+		if (itsDirection = 1) {
+			// so either way, itsPos is before the data to be removed
+			let itsPos = itsPos.getPrevious();
+			let itsIndex = itsIndex - 1;
+		}
+		let itsDirection = 0;	// so it cannot be removed again
+
+		let p = p.getNext();
+		do  itsPos.setNext(p.getNext());
+
+		let p = itsPos.getNext();
+		do  p.setPrevious(itsPos);
+		return;
+	}
+
+	method boolean hasPrevious() {
+		return ~(itsIndex < 0);
+	}
+
+	method int nextIndex() {
+		return itsIndex + 1;
+	}
+
+	method int previousIndex() {
+		return itsIndex;
+	}
+
+	method void set(String a) {
+		do itsPos.setData(a);
+		return;
+	}
+
+	method void dispose() {
+		do p.dispose();
+		do itsPos.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

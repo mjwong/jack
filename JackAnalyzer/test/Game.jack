@@ -1,0 +1,357 @@
+/**
+ * The 'model' part of the MVC set-up. Represents a single game of Fifteen. In this version
+ * a 'game' consists of three rounds of Fifteen. To complete the game, win all three rounds.
+ */
+
+class Game {
+	
+	/* Stores the number of moves the user has made since the round began */
+	field int moves;
+	
+	/* Array of Tile objects. Tiles are ordered according to the value of their 
+	 * desiredIndexfield, and since the value of this field never changes the order of
+	 * the objects in this array never changes either. */
+	field Array tiles;
+	
+	/* A Grid object stating how many rows and columns a tile object consists of. In this
+	 * version of Fifteen the value of this field never changes - tiles are always 9 columns
+	 * wide, and 7 rows high. */
+	field Grid tileSize;
+	
+	/* Tixel size (think TIle ELement, like PIcture ELement) determines how large in pixels
+	 * a square in the tile's grid appears on screen. For example in this version a grid has
+	 * a fixed size of 9 columns and 7 rows, and each location in this grid is a Tixel. On-
+	 * screen a tixel is one of the filled black (or white) rectangles that make. when assembled
+	 * create the image of a number. */
+	field Size tixelLength;
+	
+	/* Represents the space between adjacent tiles. */
+	field Size gridlinesSize;
+	
+	/* Updated every time the location of the blank tile changes. This tile is the index
+	 * of the tile that has been moved to accomodate the blank tile in its new position. */
+	field int indexOfMovedTile;
+	
+	/* A new `Game` instance */
+	constructor Game new() {
+		let tileSize = Grid.new(9, 7);
+		let tixelLength = 4;
+		let gridlinesSize = Size.new(18, 14);
+		do createTiles();
+		return this;
+	}
+	
+	/* Returns the number of moves made in the current round */
+	method int getMoves() {
+		return moves;
+	}
+	
+	/* Creates all of the games sixteen tiles. */
+	method void createTiles() {
+		var int counter;
+		var Tile tile;
+		
+		let tiles = Array.new(16);
+		
+		let tiles[0]  = Tile.encodedByInts(1030, 256, 32767 + 65, 8248);
+		let tiles[1]  = Tile.encodedByInts(3592, 32767 + 65, 16448, 16508);
+		let tiles[2]  = Tile.encodedByInts(7937, 256, 16400, 32767 + 2105);
+		let tiles[3]  = Tile.encodedByInts(515, 642, 16880, 4104);
+		let tiles[4]  = Tile.encodedByInts(7944, 1920, 8208, 32767 + 2105);
+		let tiles[5]  = Tile.encodedByInts(1540, 1027, 32767 + 16657, 32767 + 2105);
+		let tiles[6]  = Tile.encodedByInts(7936, 32767 + 129, 32767 + 129, 16416);
+		let tiles[7]  = Tile.encodedByInts(3592, 32767 + 1090, 32767 + 16657, 32767 + 2105);
+		let tiles[8]  = Tile.encodedByInts(3592, 32767 + 1090, 32767 + 24593, 4144);
+		let tiles[9]  = Tile.encodedByInts(9138, 10548, 32767 + 10854, 9166);
+		let tiles[10] = Tile.encodedByInts(4377, 32767 + 1091, 8464, 32767 + 2287);
+		let tiles[11] = Tile.encodedByInts(9138, 10260, 4625, 4575);
+		let tiles[12] = Tile.encodedByInts(10224, 18500, 4613, 9166);
+		let tiles[13] = Tile.encodedByInts(8368, 32767 + 18597, 32767 + 4734, 1474);
+		let tiles[14] = Tile.encodedByInts(10226, 2532, 2565, 9166);
+		let tiles[15] = Tile.encodedByInts(32767, -1, -1, -1);
+		
+		let counter = 0;
+		while (counter < 16) {
+			let tile = tiles[counter];
+			do tile.setDesiredIndex(counter);
+			do tile.setGame(this);
+			
+			let counter = counter + 1;
+		}
+		return;
+	}
+	
+	/* Returns the tile at the given index in the `tiles` field */
+	method Tile tileAtIndex(int index) {
+		var Tile tile;
+		var int counter;
+		var boolean exit;
+		
+		let exit = false;
+		let counter = 0;
+		while (~exit) {
+			let tile = tiles[counter];
+			if (tile.getIndex() = index) {
+				let exit = true;
+			}
+			let counter = counter + 1;
+		}
+		return tile;
+	}
+	
+	/* Moves the blank tile up one row - the displaced tile moves down into
+	 * the position previously occupied the the blank tile. */	
+	method boolean moveUp() { 
+		var int blankIndex;
+		
+		let blankIndex = indexOfBlankTile();
+		if (blankIndex > 3) {
+			do moveBlankToIndex(blankIndex - 4);
+			return true;
+		}
+		return false;
+	}
+	
+	/* Moves the blank tile down one row - the displaced tile moves up into
+	 * the position previously occupied the the blank tile. */	
+	method boolean moveDown() { 
+		var int blankIndex;
+		
+		let blankIndex = indexOfBlankTile();
+		if (blankIndex < 12) {
+			do moveBlankToIndex(blankIndex + 4);
+			return true;
+		}
+		return false;	
+	}
+	
+	/* Moves the blank tile one column to the left - the displaced tile moves into
+	 * the position previously occupied the the blank tile. */	
+	method boolean moveLeft() { 
+		var int blankIndex;
+		var int col;
+		var int row;
+		
+		let blankIndex = indexOfBlankTile();
+		let row = blankIndex / 4;
+		let col = blankIndex - (row * 4);
+		if (col > 0) {
+			do moveBlankToIndex(blankIndex - 1);
+			return true;
+		}
+		return false;
+	}	
+
+	/* Moves the blank tile one column to the right - the displaced tile moves into
+	 * the position previously occupied the the blank tile. */
+	method boolean moveRight() { 
+		var int blankIndex;
+		var int col;
+		var int row;
+		
+		let blankIndex = indexOfBlankTile();
+		let row = blankIndex / 4;
+		let col = blankIndex - (row * 4);
+		if (col < 3) {
+			do moveBlankToIndex(blankIndex + 1);
+			return true;
+		}
+		return false;
+	}
+		
+	/* Used by the `move___` methods to assist in moves. The index argument is the index
+	 * to which the blank tile is being moved */
+	method void moveBlankToIndex(int index) {
+		var Tile blankTile;
+		var Tile otherTile;
+		var int tmp;
+		
+		let blankTile = tiles[15];
+		let otherTile = tileAtIndex(index);
+		
+		let tmp = blankTile.getIndex();
+		do blankTile.setIndex(index);
+		do otherTile.setIndex(tmp);
+		
+		let moves = moves + 1;
+		let indexOfMovedTile = otherTile.getDesiredIndex();
+		
+		return;
+	}
+	
+	/* Returns the current index of the blank tile */
+	method int indexOfBlankTile() {
+		var Tile blankTile;
+		let blankTile = tiles[15];
+		return blankTile.getIndex();
+	}
+	
+	/* Returns true if, for every tile, the value of tile's index field matches the 
+	 * value of the tile's `desiredIndex` field. */
+	method boolean isWon() {
+		var boolean isWon;
+		var int counter;
+		var Tile tile;
+
+		let isWon = true;
+		let counter = 0;
+		while (counter < 16) {
+			let tile = tiles[counter];
+			if (~tile.inDesiredLocation()) {
+				let isWon = false;
+				let counter = 15;
+			}
+			let counter = counter + 1;
+		}
+		
+		return isWon;
+	}
+	
+	/* Generate the starting state of the current round. The initial location of each Tile
+	 * is determined by the contents of `layout`. */
+	method void start(String layout) {
+	
+	   /**
+	    * This method is used to position the tiles at the start of a round. The string is 
+	 	* a string of numbers, in any order, containing the numbers 1 - 16. The location
+	 	* of the number in the string is used to determine the starting position of the 
+	 	* tile that number represented. For example in the string "4 5 8 16..." the tile
+	 	* with the number '4' on it will start in the top left corner of the grid; the blank 
+	 	* tile will start in the first column of row[1] (assuming the grid is zero-indexed) 
+	 	*/
+	 	
+		var String subString;
+		var int maxIndex;
+		var int offset;
+		var int startIndex;
+		var char character;
+		var int counter;
+		var Tile tile;
+		
+		let subString = String.new(2);
+		let offset = 0;
+		let counter = 0;
+		let maxIndex = layout.length();
+		
+		while (offset < maxIndex) {
+			let character = layout.charAt(offset);
+			if (character = 32) {
+				let startIndex = subString.intValue();
+				let tile = tiles[startIndex - 1];
+				do tile.setIndex(counter);
+				let counter = counter + 1;
+				do subString.dispose();
+				let subString = String.new(2);
+			} else {
+				do subString.appendChar(character);
+			}
+			
+			let offset = offset + 1;
+		}
+		
+		let startIndex = subString.intValue();
+		let tile = tiles[startIndex - 1];
+		do tile.setIndex(counter);
+			
+		let moves = 0;
+		let indexOfMovedTile = 100;
+			
+		return;
+	}
+	
+	/* Returns the numbers 1 through 16 in an array in ascending order. */
+	function Array orderedIndexes() {
+		var Array affectedIndexes;
+		var int counter;
+		let affectedIndexes = Array.new(16);
+        let counter = 0;
+        while (counter < 16) {
+        	let affectedIndexes[counter] = counter;
+        	let counter = counter + 1;
+        }
+        return affectedIndexes;
+	}
+	
+	/* Draws the game board - called at the beginning of a round, and any time a move occurs.
+	 * In the latter case only the tiles that have moved are redrawn - this will be the blank
+	 * tile, and the tile indicated by the `indexOfMovedTile` field. */
+	method void draw() {
+		var Tile tile;
+		var int index;
+		var int ii;
+		var int counter;
+		var int row;
+		var int col;
+		var int x;
+		var int y;
+		var int width;
+		var int height; 
+		var Array affectedIndexes;
+		
+		// The dimensions of a tile in columns and rows
+        var int tlWidth;
+        var int tlHeight;
+    
+        let tlWidth = tileSize.numCols();
+        let tlHeight = tileSize.numRows();
+
+		// The dimensions of a tile in pixels
+        let width = tlWidth * tixelLength + tlWidth - 1;
+        let height = tlHeight * tixelLength + tlHeight - 1;
+        
+        // Which tiles need to be redrawn?
+        if (indexOfMovedTile = 100) {
+        	// All of them!
+        	let affectedIndexes = Game.orderedIndexes();
+        	let counter = 16;
+        } else {
+        	// Just two - the blank tile and one other.
+        	let affectedIndexes = Array.new(2);
+        	let affectedIndexes[0] = 15;
+        	let affectedIndexes[1] = indexOfMovedTile;
+        	let counter = 2;
+        }
+        
+        /* Loop over the array containing the indexes of the tiles that need to be redrawn,
+         * figure out where the should be drawn, then ask each tile to to draw itself. */
+        while (counter > 0) {
+        	
+        	let ii = affectedIndexes[counter - 1];
+        	let tile = tiles[ii];
+        	let index = tile.getIndex();
+        	
+        	let row = index / 4;
+        	let col = index - (row * 4);
+        	
+        	let x = ((col + 1) * gridlinesSize.getWidth()) + (col * width);
+        	let y = ((row + 1) * gridlinesSize.getHeight()) + (row * height);
+        	
+        	do Screen.setColor(false);
+        	do Screen.drawRectangle(x, y, x + width, y + height);
+        	do tile.draw(x, y, tixelLength); 
+        	
+        	let counter = counter - 1;
+        }
+        
+        do affectedIndexes.dispose();
+        
+		return;
+	}
+	
+	method void dispose() {
+		var int counter;
+		var Tile tile;
+		let counter = 0;	
+		while (counter < 16) {
+			let tile = tiles[counter];
+			do tile.dispose();
+		}
+		do tiles.dispose();
+		
+		do tixelSize.dispose();
+		do gridlinesSize.dispose();
+		do tileSize.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

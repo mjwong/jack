@@ -1,0 +1,21 @@
+/*
+Helper methods used during debugging to print String or integer values to the
+screen.
+*/
+class Debug {
+
+  function void printString(String label, String value) {
+    do Output.printString(label);
+    do Output.printString(value);
+    do Output.println();
+    return;
+  }
+
+  function void printInt(String label, int value) {
+    do Output.printString(label);
+    do Output.printInt(value);
+    do Output.println();
+    return;
+  }
+
+}

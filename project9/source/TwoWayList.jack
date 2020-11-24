@@ -1,0 +1,186 @@
+/** Implements the two way linked list
+ *  Adapted from the Java implementation from the book "Java Au Naturel" 
+ *  by William C. Jones, Chapter 15. */
+class TwoWayList {
+	field Node itsHead;
+	field Node p, q;	// temp node
+
+	/** create empty list containing Head node pointing to itself */
+	constructor TwoWayList new() {
+		let itsHead = Node.new(null, null, null);
+		do itsHead.setNext(itsHead);	
+		do itsHead.setPrevious(itsHead);
+		return this;
+	}
+
+	constructor TwoWayList newFromArray(Array a, int size) {
+		var int i;
+
+		let itsHead = Node.new(null, null, null);
+		do itsHead.setNext(itsHead);	
+		do itsHead.setPrevious(itsHead);
+
+		let i = 0;
+		while (i < size) {
+			do add(a[i]);
+			let i = i + 1;
+		}
+		return this;
+	}
+
+	method Node getHead() {
+		return itsHead;
+	}
+
+	method boolean contains(String a) {
+		var String str;
+		let p = itsHead.getNext();
+
+		while(~(p = itsHead)) {
+			let str = p.getData();
+			if (compare(str, a)) {
+				return true;
+			}
+			let p = p.getNext();
+		}
+		return false;
+	}
+
+	method int size() {
+		var int itsSize;
+
+		let itsSize = 0;
+		let p = itsHead.getNext();
+
+		while(~(p = itsHead)) {
+			let itsSize = itsSize + 1;
+			let p = p.getNext();
+		}
+		return itsSize;
+	}
+
+	method boolean isEmpty() {
+		return ( (itsHead.getNext()) = itsHead);
+	}
+
+	method boolean add(String a) {
+		let p = Node.new(a, itsHead, itsHead.getPrevious());
+		do itsHead.setPrevious(p);
+
+		let p = itsHead.getPrevious();
+		let p = p.getPrevious();
+		do p.setNext(itsHead.getPrevious());
+		return true;
+	}
+
+	method boolean remove(String a) {
+		var String str;
+		let p = itsHead.getNext();
+
+		if (a = null) {
+			do Output.printString("Null argument not allowed");
+			return false;
+		}
+
+		while(~(p = itsHead)) {
+			let str = p.getData();
+			if (compare(str, a)) {
+				let q = p.getPrevious();
+				do q.setNext(p.getNext());
+
+				let q = p.getNext();
+				do q.setPrevious(p.getPrevious());
+				return true;
+			}
+			let p = p.getNext();
+		}
+		return false;
+	}
+
+	method boolean replace(String a, String b) {
+		var String str;
+
+		if ((a = null) | (b = null)) {
+			do Output.printString("Null argument not allowed");
+		}
+		let p = itsHead.getNext();
+		while(~(p = itsHead)) {
+			let str = p.getData();
+			if (compare(str, a)) {
+				do p.setData(b);
+				return true;
+			}
+			let p = p.getNext();
+		}
+		return false;
+	}
+
+	method boolean compare(String a, String b) {
+		var boolean result;
+		var int i, achar, bchar, aLength, bLength;
+
+		let aLength = a.length();
+		let bLength = b.length();
+
+		if ( ~(aLength = bLength)) {
+			return false;
+		}
+
+		let i = 0;
+		while(i < aLength) {
+			let achar = a.charAt(i);
+			let bchar = b.charAt(i);
+			if ( ~(achar = bchar)) {
+				return false;
+			}
+			let i = i + 1;
+		}
+		return true;
+	}
+
+	method void clear() {
+		do itsHead.setNext(itsHead);
+		do itsHead.setPrevious(itsHead);
+		return;
+	}
+
+	method TwoWayListIterator iterator() {
+		return TwoWayListIterator.new(this);
+	}
+
+	method void showAll() {
+		let p = itsHead.getNext();
+		while (~(p = itsHead)) {
+			do Output.printString(p.getData());
+			do Output.printString(", ");
+			let p = p.getNext();
+		}
+      	do Output.println();
+		return;
+	}
+
+	method void iterShowAll() {
+		var TwoWayListIterator it;
+		let it = iterator();
+		while (it.hasNext()) {
+			do Output.printString(it.next());
+			do Output.printString(", ");
+		}
+		do Output.println();
+		do it.dispose();
+		return;
+	}
+
+	method void dispose() {
+		let p = itsHead.getNext();
+		while ( ~(p = itsHead)) {
+			do p.dispose();
+			let p = p.getNext();
+		}
+		do itsHead.dispose();
+		do p.dispose();
+		do q.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

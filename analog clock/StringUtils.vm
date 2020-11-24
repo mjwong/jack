@@ -1,0 +1,94 @@
+function StringUtils.substring 2
+push argument 2
+call String.new 1
+pop local 0
+label WHILE_EXP0
+push local 1
+push argument 2
+lt
+not
+if-goto WHILE_END0
+push local 0
+push argument 0
+push argument 1
+push local 1
+add
+call String.charAt 2
+call String.appendChar 2
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function StringUtils.appendString 2
+push argument 1
+call String.length 1
+pop local 1
+label WHILE_EXP0
+push local 0
+push local 1
+lt
+not
+if-goto WHILE_END0
+push argument 0
+push argument 1
+push local 0
+call String.charAt 2
+call String.appendChar 2
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function StringUtils.formatInt 3
+push argument 1
+call String.new 1
+pop local 0
+push argument 1
+call String.new 1
+pop local 1
+push constant 10
+push argument 1
+push constant 1
+sub
+call MathUtils.power 2
+pop local 2
+label WHILE_EXP0
+push local 2
+push argument 0
+push constant 1
+call Math.max 2
+gt
+not
+if-goto WHILE_END0
+push local 0
+push argument 2
+call String.appendChar 2
+pop temp 0
+push local 2
+push constant 10
+call Math.divide 2
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+push argument 0
+call String.setInt 2
+pop temp 0
+push local 0
+push local 1
+call StringUtils.appendString 2
+pop temp 0
+push local 1
+call String.dispose 1
+pop temp 0
+push local 0
+return

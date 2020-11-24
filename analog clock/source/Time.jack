@@ -1,0 +1,120 @@
+/*
+The Time class models the time displayed by the clock. It provides a number of
+methods to get the hours, minutes or seconds or to render the time as a String.
+The Time.advance() function is used to advance the time by one "tick", e.g. by
+4 seconds.
+
+It represents the time as the number of 4 second increments since midnight.
+E.g. 23:59:56 would be 21700. Jack's 16-bit integers can only express numbers
+up to 32767; 32767 seconds are 09:06:07 so we cannot represent the time in 1
+second resolution.
+*/
+class Time {
+
+  field int ticks;
+
+  /*
+  Returns the number of milliseconds that correspond to one "tick".
+  */
+  function int tickMs() {
+    return 4000;
+  }
+
+  /*
+  Creates a new Time object initialized with the given number of ticks. E.g.
+  Time.new(100) would return a Time initialized to 0:01:40.
+  */
+  constructor Time new(int init) {
+    let ticks = init;
+    return this;
+  }
+
+  /*
+  Creates a new Time object initiaalized with the given time string in "HH:MM:SS" format.
+
+  The caller is responsible to dispose the hms string after use.
+  */
+  constructor Time fromHMS(String hms) {
+    var String temp;
+    var int hours;
+    var int mins;
+    var int secs;
+
+    let temp = StringUtils.substring(hms, 0, 2);
+    let hours = temp.intValue();
+    let temp = StringUtils.substring(hms, 3, 2);
+    let mins = temp.intValue();
+    let temp = StringUtils.substring(hms, 6, 2);
+    let secs = temp.intValue();
+    let ticks = (hours * 900) + (mins * 15) + (secs / 4);
+
+    return this;
+  }
+
+  /*
+  Creates a duplicate of the Time instance that represents the same time.
+  */
+  method Time clone() {
+    return Time.new(ticks);
+  }
+
+  /*
+  Returns the hour of this time.
+  */
+  method int getHour() {
+    return ticks / 900;
+  }
+
+  /*
+  Returns the minute of this time.
+  */
+  method int getMinute() {
+    return MathUtils.modulo(ticks, 900) / 15;
+  }
+
+  /*
+  Returns the second of this time.
+  */
+  method int getSecond() {
+    return 4 * MathUtils.modulo(ticks, 15);
+  }
+
+  /*
+  Advances the time by the given number of ticks, e.g. time.advance(1) would
+  advance the time by 4 seconds.
+  */
+  method void advance(int noTicks) {
+    let ticks = MathUtils.modulo(ticks + noTicks, 21600);
+    return;
+  }
+
+  /*
+  Renders the time as a String in "HH:MM:SS" format.
+
+  The caller is responsible to dispose the returned String after usage.
+  */
+  method String toString() {
+    var String timeString;
+    var char fill;
+    var char div;
+    var String temp;
+
+    let timeString = String.new(8);
+    let fill = 48; // "0"
+    let div = 58; // ":"
+
+    let temp = StringUtils.formatInt(getHour(), 2, fill);
+    do StringUtils.appendString(timeString, temp);
+    do temp.dispose();
+    do timeString.appendChar(div);
+    let temp = StringUtils.formatInt(getMinute(), 2, fill);
+    do StringUtils.appendString(timeString, temp);
+    do temp.dispose();
+    do timeString.appendChar(div);
+    let temp = StringUtils.formatInt(getSecond(), 2, fill);
+    do StringUtils.appendString(timeString, temp);
+    do temp.dispose();
+    return timeString;
+  }
+
+}

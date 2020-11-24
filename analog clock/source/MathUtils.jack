@@ -1,0 +1,146 @@
+/*
+Helper functions for doing mathematical calculations.
+
+To perform trigonometric functions to calculate the position of a point on a
+circle of a given radius, the class uses several tables of pre-computed values
+for the formula "radius * sin(angle)" for various radii and all angles in 6
+degree intervals between 0 and 90 degree. (Corresponding to 1 minute intervals
+on the clock face.)
+*/
+class MathUtils {
+
+  // r * sin(x) for x in 0..15 minutes and various radii
+  static Array sinTables;
+
+  // Used internally to initialize the sinTables array.
+  function void init() {
+    var Array table;
+
+    let sinTables = Array.new(3);
+
+    // radius = 115 for the second hand
+    let table = Array.new(16);
+    let table[0] = 115;
+    let table[1] = 0;
+    let table[2] = 12;
+    let table[3] = 24;
+    let table[4] = 36;
+    let table[5] = 47;
+    let table[6] = 57;
+    let table[7] = 68;
+    let table[8] = 77;
+    let table[9] = 85;
+    let table[10] = 93;
+    let table[11] = 100;
+    let table[12] = 105;
+    let table[13] = 109;
+    let table[14] = 112;
+    let table[15] = 114;
+    let sinTables[0] = table;
+
+    // radius = 100 for the minute hand
+    let table = Array.new(16);
+    let table[0] = 100;
+    let table[1] = 0;
+    let table[2] = 10;
+    let table[3] = 21;
+    let table[4] = 31;
+    let table[5] = 41;
+    let table[6] = 50;
+    let table[7] = 59;
+    let table[8] = 67;
+    let table[9] = 74;
+    let table[10] = 81;
+    let table[11] = 87;
+    let table[12] = 91;
+    let table[13] = 95;
+    let table[14] = 98;
+    let table[15] = 99;
+    let sinTables[1] = table;
+
+    // radius = 75 for the hour hand
+    let table = Array.new(16);
+    let table[0] = 75;
+    let table[1] = 0;
+    let table[2] = 8;
+    let table[3] = 16;
+    let table[4] = 23;
+    let table[5] = 31;
+    let table[6] = 37;
+    let table[7] = 44;
+    let table[8] = 50;
+    let table[9] = 56;
+    let table[10] = 61;
+    let table[11] = 65;
+    let table[12] = 69;
+    let table[13] = 71;
+    let table[14] = 73;
+    let table[15] = 75;
+    let sinTables[2] = table;
+
+    return;
+  }
+
+  // Lookup the correct sinus table for the given radius (115, 100 or 75).
+  function Array sinTable(int radius) {
+    var int i;
+    var Array table;
+
+    let i = 0;
+    while (i < 4) {
+      let table = sinTables[i];
+      if (table[0] = radius) {
+        return table;
+      }
+      let i = i + 1;
+    }
+    do Sys.error(99);
+    return null;
+  }
+
+  // Calculates i modulo j, i.e. the remainder after division of i by j.
+  function int modulo(int i, int j) {
+    if (i < 0) {
+      let i = i + j;
+    }
+    return i - ((i / j) * j);
+  }
+
+  // Calculates i to the power of j
+  function int power(int i, int j) {
+    var int result;
+
+    let result = 1;
+    while (j > 0) {
+      let result = result * i;
+      let j = j - 1;
+    }
+
+    return result;
+  }
+
+  // Calculates "r * sin(x)" for x in 0..60 minutes
+  function int rsin(int radius, int minutes) {
+    var Array table;
+    let table = MathUtils.sinTable(radius);
+    if ((minutes > -1) & (minutes < 15)) {
+      return table[minutes + 1];
+    }
+    if ((minutes > 14) & (minutes < 30)) {
+      return table[(29 - minutes) + 1];
+    }
+    if ((minutes > 29) & (minutes < 45)) {
+      return (-1 * table[(minutes - 30) + 1]);
+    }
+    if ((minutes > 44) & (minutes < 60)) {
+      return (-1 * table[(59 - minutes) + 1]);
+    }
+    do Sys.error(99);
+    return 0;
+  }
+
+  // Calculates "-r * (1 - cos(x))" for x in 0..60 minutes
+  function int rcos(int radius, int minutes) {
+    return (-1 * MathUtils.rsin(radius, MathUtils.modulo((minutes + 15), 60)));
+  }
+}

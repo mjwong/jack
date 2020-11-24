@@ -1,0 +1,22 @@
+function Debug.printString 0
+push argument 0
+call Output.printString 1
+pop temp 0
+push argument 1
+call Output.printString 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 0
+return
+function Debug.printInt 0
+push argument 0
+call Output.printString 1
+pop temp 0
+push argument 1
+call Output.printInt 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 0
+return

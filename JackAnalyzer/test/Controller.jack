@@ -1,0 +1,260 @@
+/**
+ * The 'controller' part of the MVC set-up. Coordinates the activities of the view and the 
+ * model as the game progresses.
+ */
+ 
+class Controller {
+
+	/* The 'model' in this set-up; one game consists of three rounds of Fifteen. */
+	field Game game;
+	
+	/* The 'view' in this set-up; used to display the game state and prompt the user for
+	 * input */
+	field View view;
+	
+	/* The number of rounds successfully completed by the player. A game consists of
+	 * three rounds. */
+	field int roundsCompleted;
+	
+	/* An array of three strings, each of which represents the starting layout
+	 * for one round */
+	field Array rounds;
+
+	/* Tracks the number of times the play-loop has been executed. Its sole use is to 
+	 * assist the `runIntro` method  when its deciding which intro screen to present to
+	 * the user */
+	field int playCounter;
+	
+	/* Creates a new controller object - one object is required for each game `Game` */
+	constructor Controller new() {
+		let game = Game.new();
+		let view = View.new();
+		let playCounter = 0;
+		do createRounds();
+		return this;
+	}
+	
+	/* Helper method used to generate the content of the `rounds` array. */
+	method void createRounds() {
+		let rounds = Array.new(3);
+		/* Each string represents the layout of one round of fifteen. The first number
+		 * will appear in position (0,0), the second (0,1), ..., and the last (3,3) */
+		let rounds[0] = "14 12 2 8 11 6 7 10 13 5 16 4 9 15 3 1";
+		let rounds[1] = "15 6 12 3 14 1 10 13 16 8 11 9 5 2 4 7";
+		let rounds[2] = "14 11 16 7 15 1 10 12 6 5 3 9 2 4 8 13";
+		
+		// Useful for debugging.
+		// let rounds[0] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 16 15";
+		// let rounds[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 16 14 15";
+		// let rounds[2] = "1 2 3 4 5 6 7 8 9 10 11 12 16 13 14 15";
+		
+		return;
+	}
+
+	/* Presents the user with the intro screen. This screen is removed, and the game 
+	 * begins, when the user hits any key. */
+	method void runIntro() {
+		do game.start("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16");
+		do game.draw();
+		do view.updateMessage(">> Hit any key to start the first round: _");
+		
+		if (playCounter > 0) {
+			do View.drawScoreboard();
+		}
+		
+		do anyKeyLoop();
+		
+		if (playCounter = 0) {
+			do View.drawScoreboard();
+		}
+		
+		return;
+	}
+	
+	/* The entry method of the controller. It sets the ball rolling, and is the only bit
+	 * of public API (aside from `dispose`). */
+	method void gameLoop() {
+		var boolean continue;
+		let continue = true;
+		
+		while (continue) {
+			let continue = playLoop();
+			let playCounter = playCounter + 1;
+		}
+		
+		do View.drawQuitScreen();
+		return;
+	}
+
+	/* Controls a game of Fifteen (as represented by the `Game` class. A game consists of
+	 * three rounds of Fifteen */
+	method boolean playLoop() {
+		var boolean endGame;
+		var boolean playAgain;
+		var char code;
+		
+		let endGame = false;
+		let playAgain = true;
+		let roundsCompleted = 0;
+		
+		do runIntro();
+		
+		let code = 1000;
+		while (~endGame) {
+			
+			/* Current round completed */
+			if (code = 49) { 
+				do view.updateRoundScore(roundsCompleted + 1, game.getMoves());
+				let roundsCompleted = roundsCompleted + 1;
+				if (roundsCompleted = 3) {
+					do view.updateMessage(">> YOU'VE WON! Do you want to play again? (y/n)");
+					let endGame = true;
+					let playAgain = (yesNoLoop());
+					
+				} else {
+					do view.updateMessage(">> Round Complete. Hit any key to start the next round.");
+					do anyKeyLoop();
+					let code = roundLoop();
+				}
+			}
+			
+			/* The first round (first iteration of this loop) */
+			if (code = 1000) { // dummy code
+				let code = roundLoop();
+			}
+			
+			/* Restarting the current round */
+			if (code = 82) { // 'r'
+				let code = roundLoop();
+			}
+			
+			/* Start again from scratch */
+			if (code = 78) { // 'n'
+				let endGame = true;
+				let playAgain = true;
+			}
+			
+			/* Quitting */
+			if (code = 140) { // 'esc'
+				do View.drawQuitScreen();
+				let endGame = true;
+				let playAgain = false;
+			}
+		}
+		
+		return playAgain;
+	}
+	
+	/* Loop controlling one round of Fifteen. When a round is over - for example because
+	 * the player has completed it - control returns the the game loop which decides what
+	 * to do next (e.g. play another round) */
+	method char roundLoop() {
+		var char key;
+		var boolean didMove;
+		
+		do game.start(rounds[roundsCompleted]);
+		do game.draw();
+		do view.updateRoundStatus(roundsCompleted + 1, "In Progress");
+		do view.updateMessage("Moves in this round: ");
+		do view.updateMoves(game.getMoves());
+		
+		let key = 0;
+		
+		while (true) {
+		
+			// Wait for key press...
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+			}
+			
+			if (key = 140) { return 140; } // quit Fifteen (esc)
+			if (key = 82)  { return 82;  } // restart the current round (r)
+			if (key = 78)  { return 78;  } // hard reset (n)
+			
+			if (key = 130) { let didMove = game.moveLeft();  }
+			if (key = 131) { let didMove = game.moveUp();    }
+			if (key = 132) { let didMove = game.moveRight(); }
+			if (key = 133) { let didMove = game.moveDown();  }
+			
+			if (didMove) {
+				do game.draw();
+				
+				if (game.isWon()) {
+					return 49;
+				} else {
+					do view.updateMoves(game.getMoves());
+					let didMove = false;
+				}
+			}
+			
+			// Wait for key release...
+			while (~(key = 0)) {
+				let key = Keyboard.keyPressed();
+			}
+		}
+		
+		return 0;
+	}
+	
+	/* Loop used to solicit a 'y' or 'n' key-press from the user. */
+	method boolean yesNoLoop() {
+		var char key;
+
+		let key = Keyboard.keyPressed();
+		while (~(key = 0)) {
+			let key = Keyboard.keyPressed();
+		}
+	
+		while (true) {
+		
+			// Wait for key press...
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+			}
+		
+			if (key = 89)  { return true;  } // 'y'
+			if (key = 78)  { return false; } // 'n'
+		
+			while (~(key = 0)) {
+				let key = Keyboard.keyPressed();
+			}
+		}
+		return false;
+	}
+	
+	/* Loop used to solicit a key-press from the user */
+	method void anyKeyLoop() {
+		var boolean exit;
+		var char key;
+		
+		let exit = false;
+		let key = Keyboard.keyPressed();
+		
+		while (~(key = 0)) {
+			let key = Keyboard.keyPressed();
+		}
+		
+		while (~exit) {
+			
+			// Wait for key press...
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+			}
+			
+			while (~(key = 0)) {
+				let key = Keyboard.keyPressed();
+			}
+			
+			let exit = true;
+		}
+		return;
+	}
+
+	method void dispose() {
+		do rounds.dispose();
+		do game.dispose();
+		do view.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

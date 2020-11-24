@@ -1,0 +1,28 @@
+/**
+ * Convenience class used to describe a standard two-dimensional grid.
+ */
+ 
+class Grid {
+
+	field int rows;	
+	field int cols;
+
+	constructor Grid new(int cols_, int rows_) {
+		let cols = cols_;
+		let rows = rows_;
+		return this;
+	}
+
+	method int numRows() {
+		return rows;
+	}
+	
+	method int numCols() {
+		return cols;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

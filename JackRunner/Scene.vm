@@ -1,0 +1,564 @@
+function Scene.new 0
+push constant 6
+call Memory.alloc 1
+pop pointer 0
+push constant 20
+pop this 2
+push constant 5
+pop this 4
+push constant 0
+pop this 5
+push constant 512
+push this 4
+call Math.divide 2
+pop this 3
+push this 2
+call Array.new 1
+pop this 0
+push constant 0
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 6
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 7
+push this 0
+add
+push constant 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 8
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 9
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 10
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 11
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 12
+push this 0
+add
+push constant 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 13
+push this 0
+add
+push constant 3
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 14
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 15
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 16
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 17
+push this 0
+add
+push constant 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 18
+push this 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 19
+push this 0
+add
+push constant 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push pointer 0
+call Scene.toRects 1
+pop temp 0
+push pointer 0
+return
+function Scene.toRects 4
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+push this 2
+push constant 4
+call Math.multiply 2
+call Array.new 1
+pop this 1
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push local 0
+push constant 4
+call Math.multiply 2
+pop local 3
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+push constant 20
+call Math.multiply 2
+pop local 1
+push local 0
+push this 3
+call Math.multiply 2
+pop local 2
+push local 3
+push constant 0
+add
+push this 1
+add
+push local 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 1
+add
+push this 1
+add
+push constant 255
+push local 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 2
+add
+push this 1
+add
+push local 2
+push this 3
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 3
+add
+push this 1
+add
+push constant 255
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Scene.doesCollideRect 7
+push argument 0
+pop pointer 0
+push constant 0
+pop local 6
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push local 0
+push constant 4
+call Math.multiply 2
+pop local 1
+push local 1
+push constant 0
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 1
+push constant 1
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 3
+push local 1
+push constant 2
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 4
+push local 1
+push constant 3
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 5
+push local 6
+not
+push local 2
+push argument 3
+lt
+push local 4
+push argument 1
+gt
+and
+push local 3
+push argument 4
+lt
+and
+push local 5
+push argument 2
+gt
+and
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 6
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 6
+return
+function Scene.step 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Scene.draw 6
+push argument 0
+pop pointer 0
+push this 2
+push constant 1
+sub
+pop local 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+label WHILE_EXP0
+push local 0
+push constant 1
+neg
+gt
+not
+if-goto WHILE_END0
+push local 0
+push constant 4
+call Math.multiply 2
+pop local 1
+push local 1
+push constant 0
+add
+push this 1
+add
+pop pointer 1
+push that 0
+push argument 1
+sub
+push constant 1
+add
+pop local 2
+push local 1
+push constant 1
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 3
+push local 1
+push constant 2
+add
+push this 1
+add
+pop pointer 1
+push that 0
+push argument 1
+sub
+push constant 1
+add
+pop local 4
+push local 1
+push constant 3
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 5
+push constant 511
+push constant 0
+push local 2
+call Math.max 2
+call Math.min 2
+pop local 2
+push constant 511
+push constant 0
+push local 4
+call Math.max 2
+call Math.min 2
+pop local 4
+push local 3
+push constant 255
+eq
+not
+push local 4
+push constant 0
+gt
+and
+push local 4
+push local 2
+sub
+push constant 0
+gt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+push local 3
+push local 4
+push local 5
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE0
+push local 0
+push constant 1
+sub
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push constant 0
+pop local 0
+label WHILE_EXP1
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END1
+push local 0
+push constant 4
+call Math.multiply 2
+pop local 1
+push local 1
+push constant 0
+add
+push this 1
+add
+pop pointer 1
+push that 0
+push argument 1
+sub
+pop local 2
+push local 1
+push constant 1
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 3
+push local 1
+push constant 2
+add
+push this 1
+add
+pop pointer 1
+push that 0
+push argument 1
+sub
+pop local 4
+push local 1
+push constant 3
+add
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 5
+push constant 511
+push constant 0
+push local 2
+call Math.max 2
+call Math.min 2
+pop local 2
+push constant 511
+push constant 0
+push local 4
+call Math.max 2
+call Math.min 2
+pop local 4
+push local 3
+push constant 255
+eq
+not
+push local 4
+push constant 0
+gt
+and
+push local 4
+push local 2
+sub
+push constant 0
+gt
+and
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 2
+push local 3
+push local 4
+push local 5
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE1
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP1
+label WHILE_END1
+push constant 0
+return
+function Scene.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Array.dispose 1
+pop temp 0
+push this 1
+call Array.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

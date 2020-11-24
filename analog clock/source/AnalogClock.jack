@@ -1,0 +1,123 @@
+/*
+The AnalogClock class is responsible for rendering a simple analog clock
+representation of a given Time instance.
+*/
+class AnalogClock {
+
+  // X coordinate of the center of the clock
+  field int x;
+  // Y coordinate of the center of the clock
+  field int y;
+  // Current time represented by the clock
+  field Time currentTime;
+  // Time at the last tick - required to deleting the clock hands
+  field Time lastTime;
+
+  /*
+  Creates a new AnalogClock instance for the given time.
+  */
+  constructor AnalogClock new(Time time) {
+    let x = 256;
+    let y = 128;
+    let currentTime = time;
+    let lastTime = null;
+    do drawClock();
+    return this;
+  }
+
+  /*
+  Calculates the position of the Hour clock hand for the given time.
+  */
+  method int hourHandPos(Time time) {
+    var int pos;
+    let pos = 5 * MathUtils.modulo(time.getHour(), 12);
+    let pos = pos + (time.getMinute() / 12);
+    return pos;
+  }
+
+  /*
+  Draws the clock border without the hands.
+  */
+  method void drawClock() {
+    do Screen.clearScreen();
+    do Screen.setColor(true);
+    do Screen.drawCircle(x, y, 120);
+    do Screen.setColor(false);
+    do Screen.drawCircle(x, y, 118);
+    return;
+  }
+
+  /*
+  Draws a single hand with the given position, radius and color.
+  Position is specified as a value between 0 and 59.
+  */
+  method void drawHand(int pos, int radius, boolean color) {
+    var int xa;
+    var int ya;
+
+    do Screen.setColor(color);
+    let xa = MathUtils.rsin(radius, pos);
+    let ya = MathUtils.rcos(radius, pos);
+    do Screen.drawLine(x, y, x + xa, y + ya);
+
+    return;
+  }
+
+  /*
+  Draws the hour hand for the given time using the specified color.
+  This method calculates the position of the hour hand as a value between 0 and 59.
+  */
+  method void drawHourHand(Time time, boolean color) {
+    do drawHand(hourHandPos(time), 75, color);
+    return;
+  }
+
+  /*
+  Draws the minute hand for the given time using the specified color.
+  */
+  method void drawMinuteHand(Time time, boolean color) {
+    do drawHand(time.getMinute(), 100, color);
+    return;
+  }
+
+  /*
+  Draws the second hand for the given time using the specified color.
+  */
+  method void drawSecondHand(Time time, boolean color) {
+    do drawHand(time.getSecond(), 115, color);
+    return;
+  }
+
+  /*
+  Draw all three hands of the clock for the given time using the specified color.
+  */
+  method void drawHands(Time time, boolean color) {
+    do drawHourHand(time, color);
+    do drawMinuteHand(time, color);
+    do drawSecondHand(time, color);
+    return;
+  }
+
+  /*
+  Redraws the clock: If the hour, minute or second hands have advanced it
+  deletes the hand before redrawing it at the new position.
+  */
+  method void draw() {
+    var int h1;
+    var int h2;
+    if (~(lastTime = null)) {
+      if (~(lastTime.getHour() = currentTime.getHour())) {
+        do drawHourHand(lastTime, false);
+      }
+      if (~(lastTime.getMinute() = currentTime.getMinute())) {
+        do drawMinuteHand(lastTime, false);
+      }
+      if (~(lastTime.getSecond() = currentTime.getSecond())) {
+        do drawSecondHand(lastTime, false);
+      }
+    }
+    do drawHands(currentTime, true);
+    let lastTime = currentTime.clone();
+    return;
+  }
+}

@@ -1,0 +1,113 @@
+class Main {
+	function void main() {
+		var TwoWayList t;
+		var TwoWayList u;
+		var TwoWayListIterator it;
+		var boolean result;
+		var String str;
+		var Array arr;
+		var int length;
+
+		let t = TwoWayList.new();
+		do  t.add("Apple");
+		do  t.add("Orange");
+		do  t.add("Pear");
+		do  t.add("Watermelon");
+
+		do  Output.printString("size of t: ");
+      	do  Output.printInt(t.size());
+      	do  Output.println();
+      	do  t.showAll();
+
+		do  t.add("Papaya");
+		do  t.showAll();
+
+		do	t.replace("Apple", "Rambutan");
+		do	t.replace("Watermelon", "Kiwi fruit");		
+		do  Output.printString("---After replace Apple and Watermelon---");
+		do  Output.println();
+		do  t.iterShowAll();
+
+		do  t.remove("Pear");
+		do  Output.printString("---After remove Pear---");
+		do  Output.println();
+		do  t.iterShowAll();
+		do  Output.printString("size: ");
+      	do  Output.printInt( t.size() );
+      	do  Output.println();
+
+      	let result = t.contains("Kiwi fruit");
+      	do  Output.printString("---Contains Kiwi fruit ? ");
+      	let str = Main.boolStr(result);
+      	do  Output.printString(str);
+      	do  Output.println();
+
+      	do  t.clear();
+      	do  Output.printString("---After clear. Size of t: ");
+      	do  Output.printInt( t.size() );
+      	do  Output.println();
+      	do  Output.printString("Is emtpy? ");
+      	let str = Main.boolStr( t.isEmpty() );
+      	do  Output.printString( str );	// -1 for true, 0 for false
+		do  Output.println();
+		do  t.dispose();	// clear up memory
+
+		// Create array
+		let length = 5;
+		let arr = Array.new(length);
+		let arr[0] = "Grape";
+		let arr[1] = "Grapefruit";
+		let arr[2] = "Honeydew";
+		let arr[3] = "Lemon";
+		let arr[4] = "Strawberry";
+
+		// Create list using array
+		do  Output.printString("---Using array to init list---");
+		do  Output.println();
+		let u = TwoWayList.newFromArray(arr, length);
+
+		do  Output.printString("size of u: ");
+      	do  Output.printInt( u.size() );
+		do  Output.println();
+		do 	u.showAll();
+
+		/** Test other TwoWayListIterator methods */
+		let it = u.iterator();
+
+		// remove first item
+		if (it.hasNext()) {
+			do it.next();
+			do it.remove();
+		}
+		do  Output.printString("---After remove: ");
+		// do not use iterShowAll() when using iterator() cos it will mess up.
+		do  u.showAll();	// use this instead
+		
+		while ( it.hasNext() ) {
+			do it.next();
+			if (it.nextIndex() = 2) {	// replace at current index 1
+				do it.set("Guava");
+			}
+			if (it.nextIndex() = 2) {	// add at next index 2
+				do it.add("Apple");
+			}
+		}
+		do  it.add("longan");			// add after last item
+		do  Output.printString("---After set/add: ");
+		do  u.iterShowAll();
+		do  Output.println();
+
+		do  Output.printString("---Dispose: ");
+		do  u.dispose();
+		do  it.dispose();
+   		return;
+   }
+
+   	function String boolStr(boolean b) {
+		if (b) {
+			return "true";
+		} else {
+			return "false";
+		}
+	}
+}

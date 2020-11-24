@@ -1,0 +1,156 @@
+/**
+ * Class representing the display. The majority of drawing is handled by this class (with
+ * the notable exception of the gameboard (`Game`) which knows how to draw itself.
+ */
+
+class View {
+	
+	/**
+	 * `round***StatusTextArea`s are TextArea objects that pinpoint the section of the scoreboard
+	 * which is used to display information relating to the relevant round (e.g. the number
+	 * of moves taken to complete the round). */
+	
+	field TextArea roundOneStatusTextArea;
+	
+	field TextArea roundTwoStatusTextArea;
+	
+	field TextArea roundThreeStatusTextArea;
+	
+	/* TextArea describing the area beneath the gameboard and the scoreboard. */
+	field TextArea messageTextArea;
+	
+	/* TextArea describing the area where the move-count of the current round is displayed. */
+	field TextArea movesTextArea;
+
+	
+	/* Creates a new view object */
+	constructor View new() {
+		let roundOneStatusTextArea   = TextArea.new(6, 49, 15);
+		let roundTwoStatusTextArea   = TextArea.new(8, 49, 15);
+		let roundThreeStatusTextArea = TextArea.new(10, 49, 15);
+		let messageTextArea          = TextArea.new(21, 0, 64);
+		let movesTextArea 			 = TextArea.new(21, 22, 10);
+	
+		do View.drawWelcome();
+		return this;
+	}
+	
+	/* Draws the welcome screen. This screen is only presented once: when Fifteen first 
+	 * loads. */
+	function void drawWelcome() {
+		var int line;
+		let line = 3;
+		
+		// Draw dividing lines
+		do Screen.setColor(true);
+		do Screen.drawLine(270, 0, 270, 208);
+		do Screen.drawLine(0, 209, 510, 209);
+		
+		// Draw Welcome para
+		do View.displayString("Welcome to 15",               line, 36);
+		do View.displayString("---------------------------", line + 1,  36);
+		do View.displayString("To win complete all 3",       line + 2,  36);
+		do View.displayString("rounds in as few moves as",   line + 3,  36);
+		do View.displayString("possible. (Move the blank",   line + 4,  36);
+		do View.displayString("tile using the arrow keys.)", line + 5,  36);
+		
+		// List of keyboard actions
+		do View.displayString("At any time hit:",	         line + 7,  36);
+		do View.displayString("'r' to restart a round.", 	 line + 8,  36);
+		do View.displayString("'n' to start from scratch.",  line + 9,  36);
+		do View.displayString("'esc' to quit.", 			 line + 10, 36);
+		
+		return;
+	}
+	
+	/* Draws the scoreboard (the section of the screen to the right of the gameboard). */
+	function void drawScoreboard() {
+		do Screen.setColor(false);
+		do Screen.drawRectangle(271, 0, 511, 208);
+		
+		do View.displayString("Scoreboard", 			    3, 36);
+		do View.displayString("--------------------------", 4, 36);
+		do View.displayString("Round One:   -",             6, 36);
+		do View.displayString("Round Two:   -",             8, 36);
+		do View.displayString("Round Three: -", 			10, 36);
+		do View.displayString("--------------------------", 12, 36);
+		
+		return;
+	}
+	
+	/* Draws the screen presented to the user when the exit the program */
+	function void drawQuitScreen() {
+		do Screen.clearScreen();
+		do View.displayString("Thanks for playing 'Fifteen' - Goodbye!", 12, 32 - 20);
+		return;
+	}
+	
+	/* Convenience method to display an string anywhere on screen */
+	function void displayString(String value, int x, int y) {
+		do Output.moveCursor(x, y);
+		do Output.printString(value);
+		do value.dispose();
+		return;
+	}
+	
+	/* Convenience method to display an int anywhere on screen */
+	function void displayInt(int value, int x, int y) {
+		do Output.moveCursor(x, y);
+		do Output.printInt(value);
+		return;
+	}
+	
+	/* Update the score for the specified round. This score is posted once a round is complete. */
+	method void updateRoundScore(int round, int moves) {
+		var TextArea ta;
+		let ta = textAreaForRound(round);
+		do ta.setInt(moves);
+		return;
+	}
+	
+	/* Updates the status section for the specified round in the relevant part of the scoreboard.
+	 * As it stands, the value of `status` is only ever 'In Progress'. */
+	method void updateRoundStatus(int round, String status) {
+		var TextArea ta;
+		let ta = textAreaForRound(round);
+		do ta.setString(status);
+		do status.dispose();
+		return;
+	}
+	
+	/* Update the TextArea displaying the number of moves taken so far in the current round. */
+	method void updateMoves(int moves) {
+		do movesTextArea.setInt(moves);
+		return;
+	}
+	
+	/* Update the message that appears in the bottom section of the screen (beneath the gameboard,
+	 * and the scoreboard. */
+	method void updateMessage(String message) {
+		do messageTextArea.setString(message);
+		do message.dispose();
+		return;
+	}
+	
+	/* Get the TextArea object for the relevant round. (A convenience method - only called internally.) */
+	method TextArea textAreaForRound(int round) {
+		if (round = 1) { return roundOneStatusTextArea;   }
+		if (round = 2) { return roundTwoStatusTextArea;   }
+		return roundThreeStatusTextArea;
+	}
+	
+	method void dispose() {
+		do roundOneStatusTextArea.dispose();
+		do roundTwoStatusTextArea.dispose();
+		do roundThreeStatusTextArea.dispose();
+		do movesTextArea.dispose();
+		do messageTextArea.dispose();
+		
+		do Memory.deAlloc(this);
+		return;
+		
+	
+	}
+
+
+}

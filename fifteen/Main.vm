@@ -1,0 +1,15 @@
+function Main.main 1
+call MoreMath.init 0
+pop temp 0
+call Controller.new 0
+pop local 0
+push local 0
+call Controller.gameLoop 1
+pop temp 0
+push local 0
+call Controller.dispose 1
+pop temp 0
+call MoreMath.dispose 0
+pop temp 0
+push constant 0
+return

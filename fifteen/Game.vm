@@ -1,0 +1,826 @@
+function Game.new 0
+push constant 6
+call Memory.alloc 1
+pop pointer 0
+push constant 9
+push constant 7
+call Grid.new 2
+pop this 2
+push constant 4
+pop this 3
+push constant 18
+push constant 14
+call Size.new 2
+pop this 4
+push pointer 0
+call Game.createTiles 1
+pop temp 0
+push pointer 0
+return
+function Game.getMoves 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Game.createTiles 2
+push argument 0
+pop pointer 0
+push constant 16
+call Array.new 1
+pop this 1
+push constant 0
+push this 1
+add
+push constant 1030
+push constant 256
+push constant 32767
+push constant 65
+add
+push constant 8248
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push this 1
+add
+push constant 3592
+push constant 32767
+push constant 65
+add
+push constant 16448
+push constant 16508
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push this 1
+add
+push constant 7937
+push constant 256
+push constant 16400
+push constant 32767
+push constant 2105
+add
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push this 1
+add
+push constant 515
+push constant 642
+push constant 16880
+push constant 4104
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push this 1
+add
+push constant 7944
+push constant 1920
+push constant 8208
+push constant 32767
+push constant 2105
+add
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+push this 1
+add
+push constant 1540
+push constant 1027
+push constant 32767
+push constant 16657
+add
+push constant 32767
+push constant 2105
+add
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 6
+push this 1
+add
+push constant 7936
+push constant 32767
+push constant 129
+add
+push constant 32767
+push constant 129
+add
+push constant 16416
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 7
+push this 1
+add
+push constant 3592
+push constant 32767
+push constant 1090
+add
+push constant 32767
+push constant 16657
+add
+push constant 32767
+push constant 2105
+add
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 8
+push this 1
+add
+push constant 3592
+push constant 32767
+push constant 1090
+add
+push constant 32767
+push constant 24593
+add
+push constant 4144
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 9
+push this 1
+add
+push constant 9138
+push constant 10548
+push constant 32767
+push constant 10854
+add
+push constant 9166
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 10
+push this 1
+add
+push constant 4377
+push constant 32767
+push constant 1091
+add
+push constant 8464
+push constant 32767
+push constant 2287
+add
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 11
+push this 1
+add
+push constant 9138
+push constant 10260
+push constant 4625
+push constant 4575
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 12
+push this 1
+add
+push constant 10224
+push constant 18500
+push constant 4613
+push constant 9166
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 13
+push this 1
+add
+push constant 8368
+push constant 32767
+push constant 18597
+add
+push constant 32767
+push constant 4734
+add
+push constant 1474
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 14
+push this 1
+add
+push constant 10226
+push constant 2532
+push constant 2565
+push constant 9166
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 15
+push this 1
+add
+push constant 32767
+push constant 1
+neg
+push constant 1
+neg
+push constant 1
+neg
+call Tile.encodedByInts 4
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 16
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+push local 0
+call Tile.setDesiredIndex 2
+pop temp 0
+push local 1
+push pointer 0
+call Tile.setGame 2
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Game.tileAtIndex 3
+push argument 0
+pop pointer 0
+push constant 0
+pop local 2
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 2
+not
+not
+if-goto WHILE_END0
+push local 1
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Tile.getIndex 1
+push argument 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 2
+label IF_FALSE0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Game.moveUp 1
+push argument 0
+pop pointer 0
+push pointer 0
+call Game.indexOfBlankTile 1
+pop local 0
+push local 0
+push constant 3
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push local 0
+push constant 4
+sub
+call Game.moveBlankToIndex 2
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function Game.moveDown 1
+push argument 0
+pop pointer 0
+push pointer 0
+call Game.indexOfBlankTile 1
+pop local 0
+push local 0
+push constant 12
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push local 0
+push constant 4
+add
+call Game.moveBlankToIndex 2
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function Game.moveLeft 3
+push argument 0
+pop pointer 0
+push pointer 0
+call Game.indexOfBlankTile 1
+pop local 0
+push local 0
+push constant 4
+call Math.divide 2
+pop local 2
+push local 0
+push local 2
+push constant 4
+call Math.multiply 2
+sub
+pop local 1
+push local 1
+push constant 0
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push local 0
+push constant 1
+sub
+call Game.moveBlankToIndex 2
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function Game.moveRight 3
+push argument 0
+pop pointer 0
+push pointer 0
+call Game.indexOfBlankTile 1
+pop local 0
+push local 0
+push constant 4
+call Math.divide 2
+pop local 2
+push local 0
+push local 2
+push constant 4
+call Math.multiply 2
+sub
+pop local 1
+push local 1
+push constant 3
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push local 0
+push constant 1
+add
+call Game.moveBlankToIndex 2
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function Game.moveBlankToIndex 3
+push argument 0
+pop pointer 0
+push constant 15
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push pointer 0
+push argument 1
+call Game.tileAtIndex 2
+pop local 1
+push local 0
+call Tile.getIndex 1
+pop local 2
+push local 0
+push argument 1
+call Tile.setIndex 2
+pop temp 0
+push local 1
+push local 2
+call Tile.setIndex 2
+pop temp 0
+push this 0
+push constant 1
+add
+pop this 0
+push local 1
+call Tile.getDesiredIndex 1
+pop this 5
+push constant 0
+return
+function Game.indexOfBlankTile 1
+push argument 0
+pop pointer 0
+push constant 15
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Tile.getIndex 1
+return
+function Game.isWon 3
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push constant 16
+lt
+not
+if-goto WHILE_END0
+push local 1
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Tile.inDesiredLocation 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 0
+push constant 15
+pop local 1
+label IF_FALSE0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Game.start 7
+push argument 0
+pop pointer 0
+push constant 2
+call String.new 1
+pop local 0
+push constant 0
+pop local 2
+push constant 0
+pop local 5
+push argument 1
+call String.length 1
+pop local 1
+label WHILE_EXP0
+push local 2
+push local 1
+lt
+not
+if-goto WHILE_END0
+push argument 1
+push local 2
+call String.charAt 2
+pop local 4
+push local 4
+push constant 32
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+call String.intValue 1
+pop local 3
+push local 3
+push constant 1
+sub
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 6
+push local 6
+push local 5
+call Tile.setIndex 2
+pop temp 0
+push local 5
+push constant 1
+add
+pop local 5
+push local 0
+call String.dispose 1
+pop temp 0
+push constant 2
+call String.new 1
+pop local 0
+goto IF_END0
+label IF_FALSE0
+push local 0
+push local 4
+call String.appendChar 2
+pop temp 0
+label IF_END0
+push local 2
+push constant 1
+add
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+call String.intValue 1
+pop local 3
+push local 3
+push constant 1
+sub
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 6
+push local 6
+push local 5
+call Tile.setIndex 2
+pop temp 0
+push constant 0
+pop this 0
+push constant 100
+pop this 5
+push constant 0
+return
+function Game.orderedIndexes 2
+push constant 16
+call Array.new 1
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push constant 16
+lt
+not
+if-goto WHILE_END0
+push local 1
+push local 0
+add
+push local 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Game.draw 13
+push argument 0
+pop pointer 0
+push this 2
+call Grid.numCols 1
+pop local 11
+push this 2
+call Grid.numRows 1
+pop local 12
+push local 11
+push this 3
+call Math.multiply 2
+push local 11
+add
+push constant 1
+sub
+pop local 8
+push local 12
+push this 3
+call Math.multiply 2
+push local 12
+add
+push constant 1
+sub
+pop local 9
+push this 5
+push constant 100
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+call Game.orderedIndexes 0
+pop local 10
+push constant 16
+pop local 3
+goto IF_END0
+label IF_FALSE0
+push constant 2
+call Array.new 1
+pop local 10
+push constant 0
+push local 10
+add
+push constant 15
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 10
+add
+push this 5
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+pop local 3
+label IF_END0
+label WHILE_EXP0
+push local 3
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push local 3
+push constant 1
+sub
+push local 10
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Tile.getIndex 1
+pop local 1
+push local 1
+push constant 4
+call Math.divide 2
+pop local 4
+push local 1
+push local 4
+push constant 4
+call Math.multiply 2
+sub
+pop local 5
+push local 5
+push constant 1
+add
+push this 4
+call Size.getWidth 1
+call Math.multiply 2
+push local 5
+push local 8
+call Math.multiply 2
+add
+pop local 6
+push local 4
+push constant 1
+add
+push this 4
+call Size.getHeight 1
+call Math.multiply 2
+push local 4
+push local 9
+call Math.multiply 2
+add
+pop local 7
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 6
+push local 7
+push local 6
+push local 8
+add
+push local 7
+push local 9
+add
+call Screen.drawRectangle 4
+pop temp 0
+push local 0
+push local 6
+push local 7
+push this 3
+call Tile.draw 4
+pop temp 0
+push local 3
+push constant 1
+sub
+pop local 3
+goto WHILE_EXP0
+label WHILE_END0
+push local 10
+call Array.dispose 1
+pop temp 0
+push constant 0
+return
+function Game.dispose 2
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 16
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 1
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Tile.dispose 1
+pop temp 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 1
+call Array.dispose 1
+pop temp 0
+call tixelSize.dispose 0
+pop temp 0
+push this 4
+call Size.dispose 1
+pop temp 0
+push this 2
+call Grid.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

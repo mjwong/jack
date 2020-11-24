@@ -1,0 +1,107 @@
+class Pong2Pong{
+	field Pad Left;
+	field Pad Right;
+  field Ball ball;
+	field int opCode;  //control signal of two pads
+  field int Score;
+  field int History;
+	
+
+	constructor Pong2Pong new(){
+		let Left = Pad.new(0,100,64);
+		let Right = Pad.new(400,100,64);
+    let ball = Ball.new(20,200,2,1,1);
+		let opCode = 0;
+    let Score = 0;
+    let History = 0;
+		return this; 
+	}
+
+	method void dispose(){
+		do Left.dispose();
+		do Right.dispose();
+    do ball.dispose();
+		do Memory.deAlloc(this);
+    return;
+	}
+  /**Print the score board on the screen*/
+  method void Status(){
+        do Output.moveCursor(20, 52);
+        do Output.printString("Score: ");
+        do Output.printInt(Score);
+        do Output.moveCursor(10, 52);
+        do Output.printString("History: ");
+        do Output.printInt(History);
+        return;
+  }
+  /**excute opCode*/
+	method void RunopCode(){
+		  if (opCode = 1) { do Left.moveUp(); }
+    	if (opCode = 2) { do Left.moveDown(); }
+    	if (opCode = 3) { do Right.moveUp(); }
+    	if (opCode = 4) { do Right.moveDown(); }
+     	do Sys.wait(5);  // delays the next movement
+     	return;
+	}
+  /**restart the game*/
+  method void Restart(){
+    do Screen.clearScreen();
+    do Left.dispose();
+    do Right.dispose();
+    do ball.dispose();
+    let Left = Pad.new(0,100,64);
+    let Right = Pad.new(400,100,64);
+    let ball = Ball.new(20,200,2,1,1);
+    let opCode = 0;
+    let Score = 0;
+    do Screen.setColor(true);
+    do Screen.drawLine(406, 0, 406,254);
+    do Status();
+    return;
+  }
+
+  method void run() {
+        var char key;  // the key currently pressed by the user
+        var boolean exit;
+        let exit = false;
+        do Screen.setColor(true);
+        do Screen.drawLine(406, 0, 406,254);
+        do Status();
+        while (~exit){
+          while (key = 0) {
+          if(ball.Update(Left.returnY(), Right.returnY())){
+            let Score = ball.returnScore();
+            do Status();
+          }
+          
+          if (Score > History){
+              let History = Score;
+              do Status(); 
+            }
+          let key = Keyboard.keyPressed();
+          do RunopCode();
+          
+         }
+        if(key = 82) {do Restart();}             //r key
+        if (key = 81)  { let exit = true; }     // q key
+        if (key = 131) { let opCode = 3; }   // up arrow
+        if (key = 133) { let opCode = 4; }   // down arrow
+        if (key = 87) { let opCode = 1; }   // left arrow
+        if (key = 83) { let opCode = 2; }   // right arrow
+        while (~(key = 0)) {
+            let key = Keyboard.keyPressed();
+            do RunopCode();
+            if(ball.Update(Left.returnY(), Right.returnY())){
+              let Score =  ball.returnScore();
+              do Status();
+            }
+            
+            if (Score > History){
+              let History = Score;
+              do Status(); 
+            }
+         }
+     } // while
+     return;
+   }
+}

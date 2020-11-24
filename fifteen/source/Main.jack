@@ -1,0 +1,21 @@
+/**
+ * This Program Starts Here!
+ */ 
+ 
+class Main {
+    function void main() {
+        var Controller controller;
+        
+        do MoreMath.init();
+
+        let controller = Controller.new();
+    	do controller.gameLoop();
+    	
+        do controller.dispose();
+        do MoreMath.dispose();
+        
+        return;
+    }
+    
+
+}

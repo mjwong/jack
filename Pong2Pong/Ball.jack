@@ -1,0 +1,108 @@
+class Ball {
+
+   field int x, y;      //current position 
+   field int size;      //size of ball
+   field int sx,sy;     //current speed
+   field int Score;     //current score of this ball
+   field boolean Pause; //check wether the game is paused
+   field boolean Hit;   //check wether the ball hit pad
+   /**construct a new ball with position(Ax,Ay), size: Asize, speed(speedx,speedy)*/
+   constructor Ball new(int Ax, int Ay, int Asize, int speedx, int speedy) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      let sx = speedx;
+      let sy = speedy;
+      let Score = 0;
+      let Pause = false;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this ball. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the ball on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Erases the ball from the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+   /** Erases the ball from the screen. */
+   method void BallPause(){
+      do Output.moveCursor(10,20);
+      do Output.printString("Game Over");
+      do Output.moveCursor(12,20);
+      do Output.printString("Press R to restart.");
+      let sx = 0;
+      let sy = 0;
+      let Pause = true;
+      return;
+   }
+   /** return current Score*/
+   method int returnScore(){
+      return Score;
+   }
+   /** update the position of this ball, including collide detection*/
+   method boolean Update(int ly, int ry){
+      if (Pause){
+         return false;
+      }
+      let Hit = false;
+      do erase();
+      if(((x + sx)< 5)|((x+sx>397))){        //horizontally out of the boundary 
+         let x = x + sx;
+         if (x > 4){
+            if((y>(ry-1))&(y<(ry + 63))){    //out of the right, check right pad
+               let x = 794 - x ;
+               let Score = Score + 1;
+               let Hit = true;
+            }
+            else{
+               do BallPause();
+            }
+            
+         }
+         else{
+            if((y>(ly-1))&(y<(ly + 63))){    //check left pad
+               let x = 5 + x ;
+               let Score = Score + 1;
+               let Hit = true;
+            }
+            else{
+               do BallPause();
+            }
+         }
+         let sx = - sx;
+      }
+      else{
+         let x = x + sx;
+      }
+      if(((y + sy)< 0)|((y+sy>252))){   // vertically out of the boundary
+         let y = y + sy;
+         if (y > 0){
+            let y = 504 - y ;
+         }
+         else{
+            let y = - y;
+         }
+         let sy = - sy;
+      }
+      else{
+         let y = y + sy;
+      }
+      do draw();
+      return Hit;
+   }
+
+}

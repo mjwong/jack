@@ -1,0 +1,210 @@
+function AnalogClock.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 256
+pop this 0
+push constant 128
+pop this 1
+push argument 0
+pop this 2
+push constant 0
+pop this 3
+push pointer 0
+call AnalogClock.drawClock 1
+pop temp 0
+push pointer 0
+return
+function AnalogClock.hourHandPos 1
+push argument 0
+pop pointer 0
+push constant 5
+push argument 1
+call Time.getHour 1
+push constant 12
+call MathUtils.modulo 2
+call Math.multiply 2
+pop local 0
+push local 0
+push argument 1
+call Time.getMinute 1
+push constant 12
+call Math.divide 2
+add
+pop local 0
+push local 0
+return
+function AnalogClock.drawClock 0
+push argument 0
+pop pointer 0
+call Screen.clearScreen 0
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push constant 120
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push constant 118
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function AnalogClock.drawHand 2
+push argument 0
+pop pointer 0
+push argument 3
+call Screen.setColor 1
+pop temp 0
+push argument 2
+push argument 1
+call MathUtils.rsin 2
+pop local 0
+push argument 2
+push argument 1
+call MathUtils.rcos 2
+pop local 1
+push this 0
+push this 1
+push this 0
+push local 0
+add
+push this 1
+push local 1
+add
+call Screen.drawLine 4
+pop temp 0
+push constant 0
+return
+function AnalogClock.drawHourHand 0
+push argument 0
+pop pointer 0
+push pointer 0
+push pointer 0
+push argument 1
+call AnalogClock.hourHandPos 2
+push constant 75
+push argument 2
+call AnalogClock.drawHand 4
+pop temp 0
+push constant 0
+return
+function AnalogClock.drawMinuteHand 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Time.getMinute 1
+push constant 100
+push argument 2
+call AnalogClock.drawHand 4
+pop temp 0
+push constant 0
+return
+function AnalogClock.drawSecondHand 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Time.getSecond 1
+push constant 115
+push argument 2
+call AnalogClock.drawHand 4
+pop temp 0
+push constant 0
+return
+function AnalogClock.drawHands 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+push argument 2
+call AnalogClock.drawHourHand 3
+pop temp 0
+push pointer 0
+push argument 1
+push argument 2
+call AnalogClock.drawMinuteHand 3
+pop temp 0
+push pointer 0
+push argument 1
+push argument 2
+call AnalogClock.drawSecondHand 3
+pop temp 0
+push constant 0
+return
+function AnalogClock.draw 2
+push argument 0
+pop pointer 0
+push this 3
+push constant 0
+eq
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 3
+call Time.getHour 1
+push this 2
+call Time.getHour 1
+eq
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+push this 3
+push constant 0
+call AnalogClock.drawHourHand 3
+pop temp 0
+label IF_FALSE1
+push this 3
+call Time.getMinute 1
+push this 2
+call Time.getMinute 1
+eq
+not
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+push this 3
+push constant 0
+call AnalogClock.drawMinuteHand 3
+pop temp 0
+label IF_FALSE2
+push this 3
+call Time.getSecond 1
+push this 2
+call Time.getSecond 1
+eq
+not
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+push this 3
+push constant 0
+call AnalogClock.drawSecondHand 3
+pop temp 0
+label IF_FALSE3
+label IF_FALSE0
+push pointer 0
+push this 2
+push constant 0
+not
+call AnalogClock.drawHands 3
+pop temp 0
+push this 2
+call Time.clone 1
+pop this 3
+push constant 0
+return

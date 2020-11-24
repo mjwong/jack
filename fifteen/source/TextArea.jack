@@ -1,0 +1,59 @@
+/**
+ * Represents an area of the display which will be used to display text. Note that all
+ * values (row, col, and extent) are char values - NOT pixel values.
+ */
+ 
+class TextArea {
+
+	/* The row into which any string or int will written */
+	field int row;
+	
+	/* The column at which writing will begin when either `set__` method is called. */
+	field int col;
+	
+	/* The width (in chars) of the text area. */
+	field int extent;
+	
+	/* Creates a new TextArea instance. */
+	constructor TextArea new(int row_, int col_, int extent_) {
+		let row = row_;
+		let col = col_;
+		let extent = extent_;
+		return this;
+	}
+	
+	/* Writes the specified int into the text area starting at the instance's `col` */
+	method void setInt(Int number) {
+		do clear();
+		do Output.printInt(number);
+		return;
+	}
+	
+	/* Writes the contents of string into the text area starting at the instance's `col` */
+	method void setString(String string) {
+		do clear();
+		do Output.printString(string);
+		do string.dispose();
+		return;
+	}
+
+	/* Clears the entire text area - always called as part of the set__ methods. */
+	method void clear() {
+		var int x;
+		var int y;
+		var int width;
+		
+		let x = col * 8;
+		let y = (row * 11) + 1; 
+		let width = 8 * extent;
+		do Screen.setColor(false);
+		do Screen.drawRectangle(x, y, x + width - 1, y + 10);
+		do Output.moveCursor(row, col);
+		return;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

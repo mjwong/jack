@@ -1,0 +1,121 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */
+class Memory {
+    static Array ram, heap;
+    static int free, heapBase;
+
+    /** Initializes the class. */
+    function void init() {
+        let ram = 0;            // base address
+        let heapBase = 2048;    // base address of heap
+        let heap = heapBase;
+        let free = 0;           // relative to heapBase. 0 to 14435
+        let heap[0] = 0;        // next
+        let heap[1] = 14335;    // length
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+    *  a reference to its base address. */
+    function int alloc(int size) {
+        var int i, prev, best, block, blkSize, newSize, reqSize;
+        var boolean found;
+
+        let found = false;
+        let i     = 0;
+        let prev  = free;                   // previous block
+        let block = free;                   // current block
+        let best  = free;                   // best block found
+        let reqSize = size + 2;             // size + overhead
+
+        if (block = 0) {                    // first time
+            if (heap[1] < reqSize) {
+                return 0;
+            }
+            let block = heap[1] - reqSize;
+            let heap[1] = block;
+            let heap[block] = 0;
+            let heap[block+1] = size;
+            do Output.printInt(block+1);
+            do Output.println();
+            return heapBase + block - 2;
+        }
+
+        while ( ~((block = 0) | found)) {
+            let blkSize = heap[block+1];
+            if (~(blkSize < reqSize) & (blkSize < heap[best+1])) {
+                let best = block;
+            }
+            if (blkSize = size) {
+                let found = true;
+                do Output.println();
+            }
+            let prev  = block;
+            let block = heap[block];
+            do Output.printString("i=");
+            do Output.printInt(i);
+            do Output.println();
+            let i     = i + 1;
+        }
+
+        let blkSize = heap[best+1];                 // size of best block
+        if (blkSize < reqSize) {
+            return 0;                               // failure
+        }
+        do Output.printStrting("Found");
+
+        let block = best + blkSize - reqSize;       // start address
+        let heap[block+1]= size;                    // set size of new block
+
+        if (blkSize > reqSize) {
+            let newSize = blkSize - reqSize;        // reduced size after cutting out
+            let heap[best+1] = newSize;             // set new size
+        }
+        else {
+            // if blkSize == reqSize, then use original block in free list
+            let prev = heap[best];                  // set prev to point to next block
+        }
+
+        let heap[block]= 0;                         // set next pointer to null
+        return heapBase + block + 2;
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+    *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        do Output.printString("arr=");
+        do Output.printInt(o);
+        do Output.println();
+        do Output.printString("free=");
+        do Output.printInt(free);
+        do Output.println();
+
+        let heap[o-2-heapBase] = free;
+        let free = o - 2 - heapBase;
+
+        do Output.printInt(heap[o-2-heapBase]);
+        do Output.println();
+        do Output.printInt(free);
+        do Output.println();
+        return;
+    }
+}

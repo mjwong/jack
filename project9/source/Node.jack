@@ -1,0 +1,37 @@
+class Node {
+	field String itsData;
+	field Node itsNext;		// the next node
+	field Node itsPrevious;	// the previous node
+
+	constructor Node new(String data, Node next, Node previous) {
+		let itsData = data;
+		let itsNext = next;
+		let itsPrevious = previous;
+		return this;
+	}
+
+	/** Accessors. */
+	method String getData()     { return itsData; }
+    method Node   getNext()     { return itsNext; }
+    method Node   getPrevious() { return itsPrevious; }
+
+    method void setNext(Node p) {
+    	let itsNext = p;
+    	return;
+    }
+
+    method void setPrevious(Node p) {
+    	let itsPrevious = p;
+    	return;
+    }
+
+    method void setData(String s) {
+    	let itsData = s;
+    	return;
+    }
+
+    method void dispose() {
+		do Memory.deAlloc(this);
+    	return;
+    }
+}

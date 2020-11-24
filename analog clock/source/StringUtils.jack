@@ -1,0 +1,64 @@
+/*
+Helper functions for working with Strings.
+*/
+class StringUtils {
+
+  /*
+  Returns a substring from the source string starting at the given offset and with the specified length.
+  */
+  function String substring(String source, int offset, int length) {
+    var String copy;
+    var int pos;
+
+    let copy = String.new(length);
+    while (pos < length) {
+      do copy.appendChar(source.charAt(offset + pos));
+      let pos = pos + 1;
+    }
+
+    return copy;
+  }
+
+  /*
+  Appends a copy of str2 to the end of str1.
+  The caller is responsible to ensure that str1 has enough capacity.
+  The caller is also responsible to dispose of str2 after use if required.
+  */
+  function void appendString(String str1, String str2) {
+    var int pos;
+    var int len;
+
+    let len = str2.length();
+    while (pos < len) {
+      do str1.appendChar(str2.charAt(pos));
+      let pos = pos + 1;
+    }
+
+    return;
+  }
+
+  /*
+  Formats an integer value to fill a string of the specified width; unused
+  leading chars will be filled with the specified fill character. E.g.
+  StringUtils.formatInt(15, 4, 32) will return the String "  15". (Char 32 is
+  the space character.)
+  */
+  function String formatInt(int i, int width, char fill) {
+    var String formatted;
+    var String digits;
+    var int pow;
+
+    let formatted = String.new(width);
+    let digits = String.new(width);
+    let pow = MathUtils.power(10, (width - 1));
+    while (pow > Math.max(i, 1)) {
+      do formatted.appendChar(fill);
+      let pow = pow / 10;
+    }
+    do digits.setInt(i);
+    do StringUtils.appendString(formatted, digits);
+    do digits.dispose();
+
+    return formatted;
+  }
+}

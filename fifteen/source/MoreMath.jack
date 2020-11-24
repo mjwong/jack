@@ -1,0 +1,52 @@
+/** Adds a couple of useful mathematical functions not supplied by the Standard Library's 
+ * Math module - specifically the mod[ulo] function, and the `twoToThe` function. 
+ */
+ 
+class MoreMath {
+
+	/* Holds a sequence of sixteen numbers: [0] = pow(2, 1); [1] = pow(2,2); [2] = pow(2, 3)... */
+	static Array powers;
+	
+	function void init() {
+		do MoreMath.buildPowers();
+		return;
+	}
+	
+	/* Performs the calculation usually accessed via the '%' operator in most other programming 
+	 * languages. */
+	function int mod(int i, int j) {
+		return i - (i/j*j);
+	}
+	
+	/* Returns the value pow(2, power) using the `powers` array. */
+	function int twoToThe(int power) {
+		return powers[power];
+	}
+	
+	/* Builds `powers` array. */
+	function void buildPowers() {
+		var int counter;
+		var int number;
+	
+		let powers = Array.new(16);
+		let powers[0] = 1;
+		let number = 1;
+		let counter = 1;
+
+		while (counter < 15) {
+			let number = number * 2;
+			let powers[counter] = number;
+			let counter = counter + 1;
+		}
+
+		let powers[15] = -(32767 + 1);
+		return;
+	}
+	
+	function void dispose() {
+		do powers.dispose();
+		return;
+	}
+	
+	
+}

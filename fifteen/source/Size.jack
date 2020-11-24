@@ -1,0 +1,28 @@
+/**
+ * Convenience class used to describe a standard two-dimensional size (width x height).
+ */
+
+class Size {
+
+	field int width;
+	field int height;
+	
+	constructor Size new(int width_, int height_) {
+		let width = width_;
+		let height = height_;
+		return this;
+	}
+	
+	method int getWidth() {
+		return width;
+	}
+	
+	method int getHeight() {
+		return height;
+	}
+	
+	 method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

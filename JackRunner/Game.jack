@@ -1,0 +1,64 @@
+class Game {
+  field Player player;
+  field Scene scene;
+  field int screenOffset;
+  field boolean gameover;
+  field int score;
+
+  constructor Game new () {
+    let scene = Scene.new();
+    let player = Player.new();
+    let screenOffset = 0;
+    let score = 0;
+    return this;
+  }
+
+  method void run () {
+    do Screen.setColor(true);
+    do Screen.drawRectangle(0, 0, 511, 255);
+    while (~gameover) {
+      do step();
+      do draw();
+    }
+    /*
+    while (true) {
+
+    }
+    */
+    return;
+  }
+
+  method void step () {
+    let screenOffset = screenOffset + 1;
+    let score = score + 1;
+    do scene.step();
+    do player.step(scene, Keyboard.keyPressed());
+    if (~((player.getLeft() > screenOffset) & (player.getBottom() < 255))) {
+      let gameover = true;
+    }
+    return;
+  }
+
+  method void draw () {
+    if (~gameover) {
+      do Screen.setColor(false);
+      //do Screen.clearScreen();
+      do Output.moveCursor(0, 0);
+      do Output.printString("Score: ");
+      do Output.printInt(score);
+      do scene.draw(screenOffset);
+      do player.draw(screenOffset);
+    } else {
+      do Output.moveCursor(6, 28);
+      do Output.printString("Game Over");
+    }
+    return;
+  }
+
+  method void dispose() {
+    do player.dispose();
+    do scene.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+}

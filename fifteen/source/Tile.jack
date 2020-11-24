@@ -1,0 +1,139 @@
+/**
+ * Represents a tile of the Fifteen gameboard.
+ */
+
+class Tile {
+	
+	/* Encodes the pattern which of black square which is drawn onto the screen. When 
+	 * done correctly this pattern will display either a number (1 - 15), or the blank
+	 * tile 
+	 */
+	field Array intRep;
+	
+	/* Each tile keeps a reference to the `Game` object that it belong to, thereby allowing
+	 * it access to the information it needs when drawing to the screen */
+	field Game game;
+	
+	/* A number between 0 and 15 that describes the current location of the tile on the 
+	 * game board. This number can be used to get the tiles position in (cols, rows) format
+	 * using the following equations:
+	 * row = index / 4 (integer division)
+	 * col = index - (row * 4)
+	 */
+	field int index;
+	
+	/* The desired location of the tile. For example, the desired location of the tile
+	 * displaying the number '5' is 4 (remember we're zero-indexing), and the desired 
+	 * location of the blank tile is 15. Note: unlike `index`, this value never changes.
+	 */
+	field int desiredIndex;
+	
+	/* Create a new tile. The intRep_ array contains the decimal numbers, which when 
+	 * translated into binary, determine the pattern displayed by the tile. */
+	constructor Tile new(Array intRep_) {
+		let intRep = intRep_;
+		return this;
+	}
+	
+	/* Return the `desiredIndex` */
+	method int getDesiredIndex() {
+		return desiredIndex;
+	}
+	
+	/* Set the `desiredIndex` */
+	method void setDesiredIndex(int index) {
+		let desiredIndex = index;
+		return;
+	}
+	
+	/* Get the `index` (the current location of the tile) */
+	method int getIndex() {
+		return index;
+	}
+
+	/* Set the `index` (the current location of the tile) */
+	method void setIndex(int index_) {
+		let index = index_;
+		return;
+	}
+	
+	/* Set's the tile's `Game` property - the `Game` instance to which this tile belongs */
+	method void setGame(Game game_) {
+		let game = game_;
+		return;
+	}
+	
+	
+	/* Factory method used to construct a tile, and set its _intRep property */
+	function Tile encodedByInts(int first, int second, int third, int fourth) {
+	
+	   /**
+	    * Each tile (with the exception of the blank tile) displays a number between 1 and 
+	 	* fifteen. In reality of course this number is just a patten of small black squares
+	 	* arranged in a particular order. In this version of Fifteen that pattern is encoded
+	 	* in four 16-bit integers - 4 * 16 = 64, which is just enough to encode a tile, 
+	 	* which consists of 63 'tixels' arranged in a 9 x 7 grid). When treated as a run 
+	 	* 63 bits (ignore the first of the 64 bits) we can define a tile by drawing a black
+	 	* rectangle when a bit is set, and drawing a white rectangle when it isn't. Of course,
+	 	* during we need to keep track of how many 'tixels' we drawn so when can draw each
+	 	* 'bit' in the right location.
+	 	*/
+	 	
+		var Tile tile;
+		var Array intRep;
+		
+		let intRep = Array.new(4);
+		let intRep[0] = first;
+		let intRep[1] = second;
+		let intRep[2] = third;
+		let intRep[3] = fourth;
+		
+		let tile = Tile.new(intRep);
+		return tile;
+	}
+	
+	/* Return `true` if the value of `desiredIndex` is the same as the value of `index`. */ 
+	method boolean inDesiredLocation() {
+		return desiredIndex = index;
+	}
+
+	/* Requests that the tile draw itself onto the screen in the location specified */
+	method void draw(int x, int y, int txLength) { 
+		
+		
+		
+		var int power;
+		var int counter;
+		var int number;
+		var int tX;
+		var int tY;
+
+		var int xShift;
+		var int yShift;
+		
+		let counter = 0;
+		let xShift = txLength + 1;
+		let yShift = txLength + 1;
+		
+		do Screen.setColor(true);
+		
+		while (counter < 64) { // A tiles consists of 63 'tixels' (9 * 7)
+			let number = intRep[counter / 16];
+			let power = MoreMath.twoToThe(15 - MoreMath.mod(counter, 16));
+			if ( (counter > 0) & (~(power & number = 0)) ) {
+				let tX = x + (xShift * MoreMath.mod((counter - 1), 9));
+				let tY = y + (yShift * ((counter - 1) / 9));
+				do Screen.drawRectangle(tX, tY, tX + txLength - 1, tY + txLength - 1);
+			}
+			let counter = counter + 1;
+		}
+		
+		return;
+	}
+	
+	method void dispose() {
+		do intRep.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

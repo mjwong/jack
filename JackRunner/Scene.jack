@@ -1,0 +1,128 @@
+class Scene {
+  field Array topology;
+  field Array rects;
+  field int segments;
+  field int width;
+  field int screenSegments;
+  field int screenOffset;
+
+  constructor Scene new () {
+    let segments = 20;
+    let screenSegments = 5;
+    let screenOffset = 0;
+
+    let width =  512 / screenSegments;
+    let topology = Array.new(segments);
+    let topology[0] = 1;
+    let topology[1] = 1;
+    let topology[2] = 0;
+    let topology[3] = 1;
+    let topology[4] = 1;
+    let topology[5] = 0;
+    let topology[6] = 1;
+    let topology[7] = 2;
+    let topology[8] = 0;
+    let topology[9] = 1;
+    let topology[10] = 0;
+    let topology[11] = 1;
+    let topology[12] = 2;
+    let topology[13] = 3;
+    let topology[14] = 0;
+    let topology[15] = 0;
+    let topology[16] = 1;
+    let topology[17] = 2;
+    let topology[18] = 0;
+    let topology[19] = 1;
+    do toRects();
+
+    return this;
+  }
+
+  method void toRects () {
+    var int i, height, offset, j;
+    let i = 0;
+    let rects = Array.new(segments * 4);
+    while (i < segments) {
+      let j = i * 4;
+      let height = topology[i] * 20;
+      let offset = (i * width);
+      let rects[j+0] = offset; // x1
+      let rects[j+1] = 255 - height; // y1
+      let rects[j+2] = offset + width; // x2
+      let rects[j+3] = 255; // y2
+      let i = i + 1;
+    }
+    return;
+  }
+
+  method boolean doesCollideRect (int _x1, int _y1, int _x2, int _y2) {
+    var int i, j, x1, y1, x2, y2;
+    var boolean doesCollideRect;
+    let doesCollideRect = false;
+    while (i < segments) {
+      let j = i * 4;
+      let x1 = rects[j+0];
+      let y1 = rects[j+1];
+      let x2 = rects[j+2];
+      let y2 = rects[j+3];
+      if ((~doesCollideRect) & ((x1 < _x2) & (x2 > _x1) & (y1 < _y2) & (y2 > _y1))) {
+        let doesCollideRect = true;
+      }
+      let i = i + 1;
+    }
+    return doesCollideRect;
+  }
+
+  method void step () {
+    return;
+  }
+
+  method void draw (int screenOffset) {
+    var int i, j, x1, y1, x2, y2;
+
+    let i = segments - 1;
+    do Screen.setColor(true);
+    while (i > -1) {
+      let j = i * 4;
+      let x1 = (rects[j+0] - screenOffset) + 1;
+      let y1 = rects[j+1];
+      let x2 = (rects[j+2] - screenOffset) + 1;
+      let y2 = rects[j+3];
+      let x1 = Math.min(511, Math.max(0, x1));
+      let x2 = Math.min(511, Math.max(0, x2));
+      // don't draw height 0
+      if ((~(y1 = 255)) & (x2 > 0) & ((x2 - x1) > 0)) {
+        do Screen.drawRectangle(x1, y1, x2, y2);
+      }
+
+      let i = i - 1;
+    }
+
+    do Screen.setColor(false);
+
+    let i = 0;
+    while (i < segments) {
+      let j = i * 4;
+      let x1 = rects[j+0] - screenOffset;
+      let y1 = rects[j+1];
+      let x2 = rects[j+2] - screenOffset;
+      let y2 = rects[j+3];
+      let x1 = Math.min(511, Math.max(0, x1));
+      let x2 = Math.min(511, Math.max(0, x2));
+      // don't draw height 0
+      if ((~(y1 = 255)) & (x2 > 0) & ((x2 - x1) > 0)) {
+        do Screen.drawRectangle(x1, y1, x2, y2);
+      }
+
+      let i = i + 1;
+    }
+    return;
+  }
+
+  method void dispose() {
+    do topology.dispose();
+    do rects.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+}
